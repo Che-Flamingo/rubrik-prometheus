@@ -1,5 +1,6 @@
-use reqwest::{header::{AUTHORIZATION, CONTENT_TYPE}};
+use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use serde::{Deserialize, Serialize};
+use rubrikprom::configuration::{get_config};
 
 #[derive(Debug, Deserialize)]
 struct Data {
@@ -8,30 +9,25 @@ struct Data {
     name: String,
 }
 
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyYjRiM2UxNS0yMDc3LTRhOWYtOGZjMi00NDNlYWIzZDliODMiLCJpc01mYVJlbWVtYmVyVG9rZW4iOmZhbHNlLCJpc3MiOiI3NTg2MDU1My1hN2QwLTRhOGItOWVlNy1kYTIxZDZkZDQzZTMiLCJpc1JlZHVjZWRTY29wZSI6ZmFsc2UsImlhdCI6MTY4MjkzNjg0NCwianRpIjoiNWJkNjYxZTgtZTcxOC00NmE4LWI1ZjctOGYxNWRjOWRhMzZkIn0.SPx9AI37W3yISjg9rFefjZJ1RUMhqQGPwfj4F9C1BLQ";
-
+    let config = get_config().expect("Failed to read config file");
+    let token = config.token;
     let client = reqwest::Client::builder()
-    .danger_accept_invalid_certs(true)
-    .build()?;
+        .danger_accept_invalid_certs(true)
+        .build()?;
 
     let res = client
-    .get("https://192.168.1.110/api/v1/cluster/me")
-    .header(AUTHORIZATION, "Bearer ".to_owned() + &token)
-    .send()
-    .await?;
+        .get("https://192.168.1.110/api/v1/cluster/me")
+        .header(AUTHORIZATION, "Bearer ".to_owned() + &token)
+        .send()
+        .await?;
 
     let body = res.json::<Data>().await?;
 
     println!("{:#?}", body);
     Ok(())
-    
-
-
 }
-
 
 // .get("https://192.168.1.110/api/v1/cluster/me")
 // .header(AUTHORIZATION, "Bearer ".to_owned() + &token)
@@ -40,10 +36,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 // .await;
 
 // println!("{:?}", response);
-
-
-
-
 
 // curl -k -s -X POST https://192.168.1.110/api/v1/service_account/session -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"serviceAccountId\": \"$USER\", \"secret\": \"$SECRET\"}"
 
