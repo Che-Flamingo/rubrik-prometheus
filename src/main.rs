@@ -1,6 +1,7 @@
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use serde::{Deserialize, Serialize};
 use rubrikprom::configuration::{get_config};
+use rubrikprom::endpoints::nodes::get_nodes;
 
 #[derive(Debug, Deserialize)]
 struct Data {
@@ -11,21 +12,23 @@ struct Data {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let config = get_config().expect("Failed to read config file");
-    let token = config.token;
-    let client = reqwest::Client::builder()
-        .danger_accept_invalid_certs(true)
-        .build()?;
 
-    let res = client
-        .get("https://192.168.1.110/api/v1/cluster/me")
-        .header(AUTHORIZATION, "Bearer ".to_owned() + &token)
-        .send()
-        .await?;
+    get_nodes();
+    // let config = get_config().expect("Failed to read config file");
+    // let token = config.token;
+    // let client = reqwest::Client::builder()
+    //     .danger_accept_invalid_certs(true)
+    //     .build()?;
 
-    let body = res.json::<Data>().await?;
+    // let res = client
+    //     .get("https://192.168.1.110/api/v1/cluster/me")
+    //     .header(AUTHORIZATION, "Bearer ".to_owned() + &token)
+    //     .send()
+    //     .await?;
 
-    println!("{:#?}", body);
+    // let body = res.json::<Data>().await?;
+
+    // println!("{}{}{}", body.id, body.name, body.version);
     Ok(())
 }
 

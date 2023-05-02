@@ -7,6 +7,9 @@ edition = "2021"
 path = "src/main.rs"
 name = "rubrikprom"
 
+[lib]
+path = "src/lib.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
